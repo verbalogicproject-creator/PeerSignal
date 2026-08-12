@@ -18,6 +18,30 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
+private fun RowScope.ForgeButton(
+    label: String,
+    container: Color,
+    content: Color,
+    enabled: Boolean = true,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = container,
+            contentColor = content,
+            disabledContainerColor = Color(0xFF333333),
+            disabledContentColor = Color.Gray
+        ),
+        shape = RectangleShape,
+        modifier = Modifier.weight(1f)
+    ) {
+        Text(label, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
 fun TrainingForgeScreen(
     viewModel: TrainingForgeViewModel = hiltViewModel()
 ) {
@@ -45,41 +69,95 @@ fun TrainingForgeScreen(
             Text("THERMAL: ${uiState.thermalStatus}", color = if(uiState.thermalStatus == "NORMAL") Color.White else Color(0xFFE22639), fontFamily = FontFamily.Monospace)
         }
         
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Engine reachability. Without this the only way to discover a missing
+        // engine was to tap START and have the process die.
+        val engineColor = when (uiState.engineState) {
+            EngineState.ONLINE -> Color(0xFF00FF00)
+            EngineState.OFFLINE -> Color(0xFFE22639)
+            EngineState.CHECKING -> Color(0xFFFFB000)
+        }
+        Text(
+            "ENGINE: ${uiState.engineState.name}",
+            color = engineColor,
+            fontFamily = FontFamily.Monospace
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
-        
-        Text("EPOCH: ${uiState.epoch} / 100", color = Color.White, fontFamily = FontFamily.Monospace)
+
+        Text(
+            "EPOCH: ${uiState.epoch} / ${TrainingForgeViewModel.BUDGET_EPOCHS}",
+            color = Color.White,
+            fontFamily = FontFamily.Monospace
+        )
         Text("LOSS: ${uiState.loss}", color = Color.White, fontFamily = FontFamily.Monospace)
+
+        uiState.errorMessage?.let { message ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = message,
+                color = Color(0xFFE22639),
+                fontFamily = FontFamily.Monospace,
+                fontSize = 12.sp
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Controls
+        // Controls. Every reachable status renders exactly one control, so no
+        // state can leave the screen without an action.
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            if (uiState.status == "idle") {
-                Button(
-                    onClick = { viewModel.startTraining() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                    shape = RectangleShape,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("[ START ]", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+            when {
+                uiState.engineState == EngineState.OFFLINE && uiState.status == "idle" -> {
+                    ForgeButton(
+                        label = "[ RETRY ENGINE ]",
+                        container = Color(0xFFE22639),
+                        content = Color.White,
+                        onClick = { viewModel.refreshEngineStatus() }
+                    )
                 }
-            } else if (uiState.status == "running") {
-                Button(
-                    onClick = { viewModel.pauseTraining() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFB000), contentColor = Color.Black),
-                    shape = RectangleShape,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("[ PAUSE ]", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+                uiState.isTerminal -> {
+                    ForgeButton(
+                        label = "[ RESET ]",
+                        container = Color.White,
+                        content = Color.Black,
+                        onClick = { viewModel.reset() }
+                    )
                 }
-            } else if (uiState.status == "paused") {
-                Button(
-                    onClick = { viewModel.resumeTraining() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE22639), contentColor = Color.White),
-                    shape = RectangleShape,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("[ RESUME ]", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold)
+                uiState.status == "idle" -> {
+                    ForgeButton(
+                        label = "[ START ]",
+                        container = Color.White,
+                        content = Color.Black,
+                        enabled = uiState.engineState == EngineState.ONLINE,
+                        onClick = { viewModel.startTraining() }
+                    )
+                }
+                uiState.status == "preparing" -> {
+                    ForgeButton(
+                        label = "[ PREPARING... ]",
+                        container = Color(0xFF333333),
+                        content = Color.LightGray,
+                        enabled = false,
+                        onClick = {}
+                    )
+                }
+                uiState.status == "running" -> {
+                    ForgeButton(
+                        label = "[ PAUSE ]",
+                        container = Color(0xFFFFB000),
+                        content = Color.Black,
+                        onClick = { viewModel.pauseTraining() }
+                    )
+                }
+                uiState.status == "paused" -> {
+                    ForgeButton(
+                        label = "[ RESUME ]",
+                        container = Color(0xFFE22639),
+                        content = Color.White,
+                        onClick = { viewModel.resumeTraining() }
+                    )
                 }
             }
         }

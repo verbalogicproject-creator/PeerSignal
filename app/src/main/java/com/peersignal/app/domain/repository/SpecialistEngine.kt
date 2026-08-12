@@ -18,12 +18,31 @@ interface SpecialistEngine {
 }
 
 data class EngineCapabilities(
+    /**
+     * False when the engine could not be reached at all.
+     *
+     * Without this, a failed probe was indistinguishable from a live engine
+     * that merely reported no CPU/GPU/NPU support, so the UI had no honest way
+     * to say "offline".
+     */
+    val available: Boolean,
     val engineId: String,
     val cpuSupport: Boolean,
     val gpuSupport: Boolean,
     val npuSupport: Boolean,
     val supportedTemplates: List<String>
-)
+) {
+    companion object {
+        fun unavailable(engineId: String) = EngineCapabilities(
+            available = false,
+            engineId = engineId,
+            cpuSupport = false,
+            gpuSupport = false,
+            npuSupport = false,
+            supportedTemplates = emptyList()
+        )
+    }
+}
 
 data class TrainingRequest(
     val datasetId: String,

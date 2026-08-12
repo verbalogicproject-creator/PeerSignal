@@ -40,6 +40,7 @@ class CompanionPythonEngineImpl @Inject constructor() : SpecialistEngine {
             val res = client.get("$baseUrl/v1/capabilities").bodyAsText()
             val parsed = Json { ignoreUnknownKeys = true }.decodeFromString<CapabilitiesResponse>(res)
             EngineCapabilities(
+                available = true,
                 engineId = parsed.engine_id,
                 cpuSupport = parsed.cpu_support,
                 gpuSupport = parsed.gpu_support,
@@ -47,7 +48,10 @@ class CompanionPythonEngineImpl @Inject constructor() : SpecialistEngine {
                 supportedTemplates = parsed.supported_templates
             )
         } catch (e: Exception) {
-            EngineCapabilities("CompanionPythonEngine_v1", false, false, false, emptyList())
+            // No engine on loopback. Report it as unavailable rather than as a
+            // live engine with no capabilities -- the caller must be able to
+            // tell those apart to disable START instead of crashing on it.
+            EngineCapabilities.unavailable(engineId)
         }
     }
 
