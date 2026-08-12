@@ -174,8 +174,40 @@ The reasoning, which generalizes to any Gradle CI:
   `assemble`, so it must be requested explicitly.
 - **Same invocation, not a second one.** Gradle then shares
   `compileReleaseKotlin` and `minifyReleaseWithR8` between the assemble and
-  bundle paths, and pays configuration cost once instead of three times. Two
-  invocations would redo the up-to-date checks and re-resolve the graph.
+  bundle paths, and pays configuration cost once instead of three times.
+
+### What that consolidation actually bought: about 4 seconds
+
+Measured, not estimated. Per-step timings, run #31585174325 (before) against
+run #31585618705 (after):
+
+| Step | Before | After |
+|------|--------|-------|
+| main Gradle step | 4m35s | 2m28s |
+| `bundleRelease`, separate step | 3s | — |
+| `assembleRelease`, separate step | 1s | — |
+| **job total** | **4m51s** | **2m44s** |
+
+The redundant steps cost **four seconds between them**. Gradle's up-to-date
+checking had already made them nearly free — `assembleRelease` genuinely had
+nothing to do, so it did nothing, quickly.
+
+The 2m07s that actually disappeared came out of the *same* `./gradlew build`
+task, which the consolidation cannot explain. The likely cause is cache
+warmth: the run before spent 6s in `Post set up JDK 17` **saving** the Gradle
+cache, the run after spent 8s **restoring** it and 0s saving. One data point
+cannot separate that from the `--build-cache` flag, so no confident attribution
+is available here.
+
+> A redundant step is not automatically a slow step. Before optimizing CI, pull
+> per-step timings from
+> `gh api repos/<owner>/<repo>/actions/jobs/<job-id> --jq '.steps[]'`
+> and find out where the minutes actually are. The obvious redundancy was 0.1%
+> of this job; the real cost was elsewhere.
+
+The consolidation is still worth keeping — fewer moving parts, one
+configuration pass, and no misleading green "Build Release APK" step implying
+work that never happened. Just not as a speed fix.
 
 A `concurrency` group with `cancel-in-progress: true` was also added, so a
 newer push kills the in-flight run instead of paying for both and leaving you
