@@ -69,8 +69,12 @@ jobs:
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         run: |
+          # SIGNING_KEY_PASSWORD is intentionally NOT required. keytool offers to
+          # reuse the store password for the key, which is the common choice, so
+          # it defaults to SIGNING_KEYSTORE_PASSWORD below. Set it only if the
+          # two genuinely differ.
           missing=0
-          for v in SIGNING_KEY_BASE64 SIGNING_KEY_ALIAS SIGNING_KEYSTORE_PASSWORD SIGNING_KEY_PASSWORD; do
+          for v in SIGNING_KEY_BASE64 SIGNING_KEY_ALIAS SIGNING_KEYSTORE_PASSWORD; do
             if [ -z "${!v}" ]; then
               echo "::error::Missing repository secret $v -- cannot sign the release."
               missing=1
@@ -124,7 +128,8 @@ jobs:
           SIGNING_KEYSTORE_PATH: ${{ runner.temp }}/keystore.jks
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          # Falls back to the store password -- see the guard step.
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_KEYSTORE_PASSWORD }}
           ORG_GRADLE_PROJECT_versionName: ${{ steps.tag.outputs.name }}
           ORG_GRADLE_PROJECT_versionCode: ${{ steps.tag.outputs.code }}
         run: ./gradlew assembleRelease bundleRelease --stacktrace
