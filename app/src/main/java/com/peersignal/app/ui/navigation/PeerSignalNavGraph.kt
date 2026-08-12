@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.peersignal.app.ui.beacon.BeaconStreamScreen
 import com.peersignal.app.ui.connect.ConnectScreen
 import com.peersignal.app.ui.profile.ProfileScreen
-import com.peersignal.app.ui.sandbox.SandboxScreen
+
 
 sealed class Screen(val route: String) {
     object Sandbox : Screen("sandbox")
