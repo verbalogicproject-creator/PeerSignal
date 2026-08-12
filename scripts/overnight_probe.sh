@@ -56,6 +56,47 @@ if [ "${1:-}" = "--report" ]; then
     exit 0
 fi
 
+# --- preflight ------------------------------------------------------------
+# Refuse to run under conditions that would produce a misleading result. A
+# probe that quietly measures the wrong thing is worse than no probe.
+preflight() {
+    local fail=0
+
+    # Running under PRoot means we would be measuring PRoot's survival, not
+    # Android's -- if the PRoot session dies the child goes with it.
+    if [ ! -d /data/data/com.termux/files/usr/bin ] || [ -z "${PREFIX:-}" ]; then
+        echo "FAIL  not a Termux shell."
+        echo "      Run this from Termux directly, not from inside proot-distro."
+        echo "      Under PRoot you would measure PRoot's supervision, not Android's."
+        fail=1
+    fi
+
+    local batt chg
+    batt=$(read_batt); chg=$(read_chg)
+    echo "      battery: ${batt}%  (${chg})"
+
+    if [ "$MODE" = "lock" ]; then
+        case "$chg" in
+            Charging|Full) ;;
+            *) echo "FAIL  night 1 is the on-charger run; plug the phone in."
+               echo "      (for the unplugged control arm use: $0 $HOURS nolock)"
+               fail=1 ;;
+        esac
+    else
+        if [ "$batt" -lt 80 ] 2>/dev/null; then
+            echo "FAIL  unplugged run needs >=80% to be meaningful (have ${batt}%)."
+            fail=1
+        fi
+        case "$chg" in
+            Charging|Full)
+                echo "FAIL  this is the UNPLUGGED arm -- disconnect the charger."
+                fail=1 ;;
+        esac
+    fi
+
+    [ "$fail" -eq 0 ] || { echo; echo "aborted."; exit 1; }
+}
+
 # --- thermal zone selection ----------------------------------------------
 # Most of this device's 99 zones read 0. Pick the first that reports a
 # plausible temperature so the log is meaningful rather than a column of zeros.
@@ -70,6 +111,10 @@ done
 read_temp()  { [ -n "$ZONE" ] && echo $(( $(cat "$ZONE/temp" 2>/dev/null || echo 0) / 1000 )) || echo 0; }
 read_batt()  { cat /sys/class/power_supply/battery/capacity 2>/dev/null || echo -1; }
 read_chg()   { cat /sys/class/power_supply/battery/status  2>/dev/null || echo unknown; }
+
+echo "ColdForge overnight probe -- acceptance criterion #16"
+echo "      mode: ${MODE}   duration: ${HOURS}h"
+preflight
 
 # --- wake lock ------------------------------------------------------------
 # The control arm exists on purpose: if the run survives WITHOUT the lock, the
