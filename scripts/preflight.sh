@@ -150,6 +150,42 @@ if [ -f "$CATALOG" ]; then
   [ $missing_dep -eq 0 ] && pass "androidx import groups have matching declared artifacts"
 fi
 
+# ---------------------------------------------------------------------------
+# 6. Hilt wiring is complete.
+#     Catches a RUNTIME crash that compiles perfectly: @AndroidEntryPoint with
+#     no @HiltAndroidApp Application throws at launch with
+#       "Hilt Activity must be attached to an @HiltAndroidApp Application"
+#     Nine consecutive green builds shipped this bug. CI cannot see it.
+# ---------------------------------------------------------------------------
+# Annotations must be matched at line start: a '// @HiltAndroidApp ...' comment
+# would otherwise satisfy the check and mask the very bug being looked for.
+if [ -n "${SRC_DIRS:-}" ] && grep -rqE '^\s*@(AndroidEntryPoint|HiltViewModel)\b' $SRC_DIRS 2>/dev/null; then
+  hilt_ok=1
+  if ! grep -rqE '^\s*@HiltAndroidApp\b' $SRC_DIRS 2>/dev/null; then
+    fail "@AndroidEntryPoint/@HiltViewModel used but no @HiltAndroidApp Application: crashes at launch"
+    hilt_ok=0
+  else
+    # The annotated class must be the one the manifest actually instantiates.
+    # <application> and its android:name sit on different lines, so this must
+    # slurp the file -- line-oriented grep cannot match across them.
+    app_attr=$(perl -0777 -ne '
+        if (/<application\b(.*?)>/s) { my $a=$1; print $1 if $a =~ /android:name="([^"]+)"/ }
+      ' "$MANIFEST" 2>/dev/null)
+    if [ -z "$app_attr" ]; then
+      fail "@HiltAndroidApp exists but <application> has no android:name, so it is never used"
+      hilt_ok=0
+    else
+      cls=${app_attr##*.}
+      if ! grep -rlE '^\s*@HiltAndroidApp\b' $SRC_DIRS 2>/dev/null \
+           | xargs -r grep -lE "class +$cls\b" >/dev/null 2>&1; then
+        fail "manifest instantiates '$app_attr' but @HiltAndroidApp is on a different class"
+        hilt_ok=0
+      fi
+    fi
+  fi
+  [ $hilt_ok -eq 1 ] && pass "Hilt wiring complete (@HiltAndroidApp present and registered in manifest)"
+fi
+
 echo
 if [ $FAIL -eq 0 ]; then
   printf '\033[32mPreflight clean.\033[0m Push and watch: gh run watch --exit-status\n'
