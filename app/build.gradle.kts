@@ -67,7 +67,8 @@ android {
         }
         release {
             isMinifyEnabled = true
-            shrinkResources = true
+            // Kotlin DSL name; the Groovy form is `shrinkResources`.
+            isShrinkResources = true
             signingConfig = if (hasReleaseSigning) {
                 signingConfigs.getByName("release")
             } else {
