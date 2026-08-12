@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PeerSignal"
+rootProject.name = "ColdForge"
 include(":app")
