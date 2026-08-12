@@ -73,8 +73,8 @@ against `Int` that appears nowhere in the source.
 
 ## 5. Preflight: what you can check with no SDK
 
-`scripts/preflight.sh` runs five checks, each derived from a failure this repo
-actually hit. All five are validated against reproductions of those failures.
+`scripts/preflight.sh` runs six checks, each derived from a failure this repo
+actually hit. All six are validated against reproductions of those failures.
 
 1. **Version-catalog aliases** — every `libs.*` used in a build file exists in
    `gradle/libs.versions.toml`.
@@ -89,9 +89,37 @@ actually hit. All five are validated against reproductions of those failures.
    exactly like a stale main one.
 5. **androidx sub-package artifacts** — catches importing
    `androidx.lifecycle.compose.*` when only `lifecycle-runtime-ktx` is declared.
+6. **Hilt wiring** — catches `@AndroidEntryPoint` with no `@HiltAndroidApp`, the
+   annotation on a class the manifest does not instantiate, and an
+   `<application>` with no `android:name`. All three crash at launch and all
+   three compile cleanly.
 
 What preflight **cannot** catch: type errors, Compose compiler issues, KSP/Hilt
-graph failures, R8 output problems, lint. Those still need CI.
+graph failures, R8 output problems, lint. Those still need CI. And nothing here
+proves the app runs — see below.
+
+## 5a. A green build is not a working app
+
+Nine consecutive green builds shipped an app that **crashed instantly on
+launch**. `PeerSignalApp` was a plain `Application` carrying a comment reading
+"Initialization logic for Firebase and Hilt will go here", while `MainActivity`
+was `@AndroidEntryPoint` and the beacon screen called `hiltViewModel()`. With no
+`@HiltAndroidApp` there is no `SingletonComponent`, so `onCreate` throws:
+
+```
+IllegalStateException: Hilt Activity must be attached to an @HiltAndroidApp Application
+```
+
+Nothing in a compile can see this. Check 6 exists because of it.
+
+The same period also shipped an APK **nobody could install**. There is no
+`signingConfig`, so the release output is `app-release-unsigned.apk`, and
+Android refuses unsigned packages. The debug APK was being built the whole time
+and simply never uploaded.
+
+> Two questions a green tick does not answer: *does it launch*, and *can it be
+> installed*. Publish the debug APK (auto-signed with the debug keystore) and
+> put it on a device. Until then "CI is green" means "it compiles", nothing more.
 
 ### Two traps when writing checks like these
 
