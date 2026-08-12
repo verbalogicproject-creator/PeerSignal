@@ -6,3 +6,14 @@ app/build/
 venv/
 gradle-8.7/
 gradle-8.7-bin.zip
+
+# Signing material. These patterns exist BEFORE any keystore does -- committing
+# a release key once means it is in the git history forever, and the 20-device
+# cohort can only be upgraded by builds signed with that exact key.
+*.jks
+*.keystore
+*.p12
+keystore.properties
+
+# Local scratch
+.vouch/

@@ -1,5 +1,12 @@
 # Referenced by app/build.gradle.kts release buildType.
 
+# --- Readable release stack traces ---
+# CrashLog writes uncaught exceptions to disk, but under R8 those traces are
+# obfuscated and effectively useless without these. SourceFile is rewritten to a
+# constant so class names still shrink; the mapping file is what restores them.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+
 # --- kotlinx.serialization ---
 # Keep generated serializers and the @Serializable classes they back.
 -keepattributes *Annotation*, InnerClasses
