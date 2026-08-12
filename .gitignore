@@ -1,0 +1,8 @@
+.gradle/
+local.properties
+.idea/
+build/
+app/build/
+venv/
+gradle-8.7/
+gradle-8.7-bin.zip
