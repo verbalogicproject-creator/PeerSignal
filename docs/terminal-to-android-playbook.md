@@ -125,7 +125,35 @@ gh run view <run-id> --job=<job-id>
 
 # Recent runs with IDs and conclusions
 gh run list --limit 5
+
+# The run for the commit you just pushed -- ALWAYS pin to the SHA
+gh run list --commit $(git rev-parse HEAD)
 ```
+
+### `gh run list --limit 1` after a push is a race
+
+GitHub takes a few seconds to register a new run. Listing "the latest run"
+immediately after `git push` frequently returns the **previous** commit's run,
+which is still in progress. Watch that and you get a green result that verified
+none of your changes.
+
+This happened here: the `@HiltAndroidApp` fix was pushed, `--limit 1` returned
+the earlier docs-commit run, and it went green — appearing to confirm a fix it
+never compiled. The tell was that the uploaded artifacts were byte-for-byte
+identical to the previous run despite a source change.
+
+```bash
+# Wrong: races the push
+gh run list --limit 1 --json databaseId --jq '.[0].databaseId'
+
+# Right: cannot resolve to another commit's run
+gh run list --commit $(git rev-parse HEAD) --json databaseId --jq '.[0].databaseId'
+```
+
+> Always confirm what a run actually built before trusting its colour:
+> `gh run view <id> --json headSha`. A green tick attached to the wrong commit
+> is worse than a red one — it ends the investigation instead of starting it.
+> Identical artifact sizes across a source change mean nothing was rebuilt.
 
 **Progress is measurable even when the build stays red.** Compare step
 durations: run #7 failed at 2m51s in `compileDebugKotlin`; run #8 failed at
