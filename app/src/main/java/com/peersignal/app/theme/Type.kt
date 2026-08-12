@@ -4,33 +4,22 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
-import com.peersignal.app.R
 
-// Configure Google Fonts provider
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
-)
-
-// Inter for Editorial Sans-Serif
-val InterFont = GoogleFont("Inter")
-val InterFontFamily = FontFamily(
-    Font(googleFont = InterFont, fontProvider = provider, weight = FontWeight.Normal),
-    Font(googleFont = InterFont, fontProvider = provider, weight = FontWeight.Medium),
-    Font(googleFont = InterFont, fontProvider = provider, weight = FontWeight.SemiBold),
-    Font(googleFont = InterFont, fontProvider = provider, weight = FontWeight.Bold)
-)
-
-// JetBrains Mono for Code Blocks
-val JetBrainsMonoFont = GoogleFont("JetBrains Mono")
-val JetBrainsMonoFamily = FontFamily(
-    Font(googleFont = JetBrainsMonoFont, fontProvider = provider, weight = FontWeight.Normal),
-    Font(googleFont = JetBrainsMonoFont, fontProvider = provider, weight = FontWeight.Medium)
-)
+// These were downloadable Google Fonts (Inter / JetBrains Mono) resolved via the
+// com.google.android.gms.fonts provider, which is verified against
+// res/values/font_certs.xml. That file's certificate was not a real one: its DER
+// header declared 1095 bytes over a 1041-byte body, and the "dev" and "prod"
+// entries were byte-identical where the genuine file carries two different
+// certs. Provider verification failed, Compose threw resolving the first glyph,
+// and the app died at launch.
+//
+// System families need no provider, no Play Services and no network, which fits
+// an app whose engine is a local process on loopback. To get Inter back, bundle
+// the TTF under res/font and reference it here. Do not reintroduce the
+// downloadable-font provider with a hand-written font_certs.xml.
+val InterFontFamily = FontFamily.Default
+val JetBrainsMonoFamily = FontFamily.Monospace
 
 // Material 3 Typography override
 val EditorialTypography = Typography(
