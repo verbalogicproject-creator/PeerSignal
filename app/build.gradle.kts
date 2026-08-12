@@ -9,11 +9,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-// Signing credentials come from a git-ignored keystore.properties, or from
-// environment variables in CI. Both are absent on a fresh clone, in which case
-// the release variant falls back to debug signing so the build still succeeds --
-// an unsigned release APK cannot be installed at all, which is what shipped
-// before this.
+// Signing credentials come from a git-ignored keystore.properties locally, or
+// from environment variables in CI (release.yml decodes SIGNING_KEY_BASE64 to a
+// file and exports SIGNING_KEYSTORE_PATH).
+//
+// When neither is present the release variant is left UNSIGNED on purpose.
+// An earlier version fell back to the debug signing config so a fresh clone
+// would still produce an installable APK. That was a trap: CI has no signing
+// secrets, so every "release" APK it published was signed with the runner's
+// auto-generated debug keystore -- a DIFFERENT key each run. Two consecutive
+// CI releases were not upgrade-compatible with each other, and nothing said so.
+// Unsigned fails loudly at install time; silently-differently-signed does not.
 val keystorePropsFile = rootProject.file("keystore.properties")
 val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
@@ -21,7 +27,7 @@ val keystoreProps = Properties().apply {
 fun signingValue(key: String, env: String): String? =
     keystoreProps.getProperty(key) ?: System.getenv(env)
 
-val releaseStoreFile = signingValue("storeFile", "SIGNING_STORE_FILE")
+val releaseStoreFile = signingValue("storeFile", "SIGNING_KEYSTORE_PATH")
 val hasReleaseSigning = releaseStoreFile != null && rootProject.file(releaseStoreFile).exists()
 
 android {
@@ -38,8 +44,12 @@ android {
         // unthrottled.
         minSdk = 28
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        // release.yml derives these from the git tag and passes them as
+        // ORG_GRADLE_PROJECT_versionCode / _versionName. The literals below are
+        // the local-development fallback only -- every published build carries
+        // the tag's version, so a shipped APK can always be traced to a tag.
+        versionCode = (findProperty("versionCode") as String?)?.toInt() ?: 1
+        versionName = (findProperty("versionName") as String?) ?: "0.0.1-dev"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,7 +61,7 @@ android {
         if (hasReleaseSigning) {
             create("release") {
                 storeFile = rootProject.file(releaseStoreFile!!)
-                storePassword = signingValue("storePassword", "SIGNING_STORE_PASSWORD")
+                storePassword = signingValue("storePassword", "SIGNING_KEYSTORE_PASSWORD")
                 keyAlias = signingValue("keyAlias", "SIGNING_KEY_ALIAS")
                 keyPassword = signingValue("keyPassword", "SIGNING_KEY_PASSWORD")
             }
@@ -69,11 +79,10 @@ android {
             isMinifyEnabled = true
             // Kotlin DSL name; the Groovy form is `shrinkResources`.
             isShrinkResources = true
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
-            }
+            // No fallback. Without credentials this stays null and AGP emits
+            // app-release-unsigned.apk, which Android refuses to install --
+            // an honest failure rather than a differently-signed surprise.
+            signingConfig = if (hasReleaseSigning) signingConfigs.getByName("release") else null
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
