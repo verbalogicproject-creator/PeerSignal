@@ -44,6 +44,15 @@ jobs:
     - name: Build, test and package
       run: ./gradlew build bundleRelease --build-cache
 
+    # The release APK is UNSIGNED and cannot be installed on a device. The
+    # debug APK is signed with the auto-generated debug keystore, so this is
+    # the artifact to actually download and run.
+    - name: Upload debug APK (installable)
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:

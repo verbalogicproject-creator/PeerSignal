@@ -1,10 +1,11 @@
 package com.peersignal.app
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class PeerSignalApp : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        // Initialization logic for Firebase and Hilt will go here
-    }
-}
+// @HiltAndroidApp is what builds the SingletonComponent. Without it, every
+// @AndroidEntryPoint activity throws at onCreate:
+//   "Hilt Activity must be attached to an @HiltAndroidApp Application"
+// This compiles cleanly either way -- the check is purely at runtime.
+@HiltAndroidApp
+class PeerSignalApp : Application()
