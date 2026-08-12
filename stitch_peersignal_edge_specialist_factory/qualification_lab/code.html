@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Qualification Lab - PeerSignal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#000000",
+                      "on-tertiary-fixed": "#410006",
+                      "on-secondary-container": "#b4b5b5",
+                      "on-tertiary": "#680010",
+                      "primary-container": "#000000",
+                      "background": "#131313",
+                      "secondary-fixed-dim": "#c6c6c7",
+                      "secondary": "#c6c6c7",
+                      "on-primary": "#303030",
+                      "surface-tint": "#c6c6c6",
+                      "surface-container-highest": "#353535",
+                      "on-surface": "#e5e2e1",
+                      "on-error": "#690005",
+                      "primary": "#c6c6c6",
+                      "on-primary-fixed": "#1b1b1b",
+                      "surface-container-lowest": "#0e0e0e",
+                      "surface-variant": "#353535",
+                      "tertiary-fixed-dim": "#ffb3b0",
+                      "on-surface-variant": "#cfc4c5",
+                      "surface-container-low": "#1b1c1c",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "secondary-container": "#454747",
+                      "error": "#ffb4ab",
+                      "primary-fixed": "#e2e2e2",
+                      "surface-container": "#1f2020",
+                      "on-primary-container": "#757575",
+                      "on-background": "#e5e2e1",
+                      "on-error-container": "#ffdad6",
+                      "surface": "#131313",
+                      "outline-variant": "#4c4546",
+                      "tertiary": "#ffb3b0",
+                      "tertiary-fixed": "#ffdad8",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#131313",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "outline": "#988e90",
+                      "inverse-primary": "#5e5e5e",
+                      "on-primary-fixed-variant": "#474747",
+                      "on-tertiary-container": "#e22639",
+                      "surface-container-high": "#2a2a2a",
+                      "inverse-on-surface": "#303030",
+                      "secondary-fixed": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#454747",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#93001b",
+                      "on-secondary": "#2f3131",
+                      "surface-bright": "#393939"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "gutter": "16px",
+                      "container-max": "1440px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "body-rt": [
+                              "Inter"
+                      ],
+                      "data-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "data-lg": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-rt": [
+                              "15px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "data-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Swiss/Leica Dark Editorial Specific Styles */
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            /* Using a fluid grid base */
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 100vh;
+        }
+
+        /* 1px Structural Borders */
+        .tech-border {
+            border: 1px solid #FFFFFF;
+        }
+        
+        .tech-border-b {
+            border-bottom: 1px solid #FFFFFF;
+        }
+        
+        .tech-border-r {
+            border-right: 1px solid #FFFFFF;
+        }
+
+        /* Container forcing zero radius */
+        .sharp-edges {
+            border-radius: 0 !important;
+        }
+
+        /* Terminal Amber */
+        .text-amber {
+            color: #FFB000;
+        }
+        
+        /* Leica Red */
+        .text-leica-red {
+            color: #E22639;
+        }
+        .border-leica-red {
+            border-color: #E22639;
+        }
+        
+        /* Mechanical Buttons */
+        .btn-mechanical {
+            border: 1px solid #FFFFFF;
+            background-color: #000000;
+            color: #FFFFFF;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        
+        .btn-mechanical:hover {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+        
+        .btn-mechanical.red {
+            border-color: #E22639;
+            color: #E22639;
+        }
+        
+        .btn-mechanical.red:hover {
+            background-color: #E22639;
+            color: #000000;
+        }
+
+        .btn-mechanical.solid-white {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        .btn-mechanical.solid-white:hover {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background dark:bg-background text-on-background dark:text-on-background font-body-rt overflow-x-hidden pt-16 md:pt-0">
+<!-- Mobile Top Navigation (only visible on mobile) -->
+<div class="fixed top-0 left-0 w-full z-50 md:hidden bg-background dark:bg-background border-b border-on-surface dark:border-on-surface h-16 flex justify-between items-center px-margin">
+<div class="flex items-center gap-2 text-primary dark:text-primary font-data-sm text-data-sm">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-headline-md text-headline-md font-bold text-on-background dark:text-on-background">[SYSTEM_01]</span>
+</div>
+<span class="material-symbols-outlined text-primary dark:text-primary">sensors</span>
+</div>
+<div class="flex h-screen w-full">
+<!-- Desktop Side Navigation (NavigationDrawer) -->
+<aside class="hidden md:flex flex-col h-full w-80 border-r-2 border-on-surface dark:border-on-surface bg-background dark:bg-background py-margin flex-shrink-0 z-40">
+<div class="px-margin mb-8">
+<h1 class="font-headline-md text-headline-md text-on-background font-bold tracking-tight uppercase">[NODE_TERMINAL]</h1>
+</div>
+<nav class="flex-1 flex flex-col font-data-lg text-data-lg">
+<a class="text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">terminal</span> ACTIVE ENGINE
+                </a>
+<a class="text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">analytics</span> SYSTEM TELEMETRY
+                </a>
+<a class="text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">history</span> THERMAL LOGS
+                </a>
+<!-- Setting LAB as active based on intent (Qualification Lab) -->
+<a class="text-background bg-on-background font-bold px-4 py-2 transition-colors duration-100 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">science</span> <span class="text-amber">&gt;</span> LAB_EVALUATION
+                </a>
+<a class="text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 flex items-center gap-3 mt-auto mb-4 border-t border-on-surface pt-4" href="#">
+<span class="material-symbols-outlined">settings_input_component</span> PARAM_SET
+                </a>
+<a class="text-on-tertiary-container px-4 py-2 hover:bg-surface-variant transition-colors duration-100 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined text-leica-red">emergency</span> HALT_ALL
+                </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto pb-24 md:pb-0 px-4 md:px-6 py-6 md:py-8 layout-grid">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Header Section -->
+<header class="mb-8 tech-border-b pb-4">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-data-sm text-data-sm text-on-surface-variant mb-1 uppercase tracking-widest">PeerSignal // Evaluation Protocol</p>
+<h2 class="font-headline-lg text-headline-lg uppercase tracking-tighter">MODEL EVALUATION: <br/><span class="text-amber">MiniULTRA-SKG-v0</span></h2>
+</div>
+<div class="hidden md:flex flex-col items-end font-data-sm text-data-sm">
+<span class="text-on-surface-variant">STATUS: <span class="text-white">PENDING REVIEW</span></span>
+<span class="text-on-surface-variant">TS: 1709482390</span>
+</div>
+</div>
+</header>
+<!-- Top Data Readout -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+<div class="tech-border sharp-edges p-6 bg-surface-container-lowest relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-2 opacity-50"><span class="material-symbols-outlined">show_chart</span></div>
+<p class="font-data-sm text-data-sm text-on-surface-variant uppercase tracking-widest mb-2">Primary Metric: MRR</p>
+<p class="font-headline-lg text-headline-lg text-white font-bold tabular-nums tracking-tighter">0.892</p>
+</div>
+<div class="tech-border sharp-edges p-6 bg-surface-container-lowest relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-50"><span class="material-symbols-outlined">track_changes</span></div>
+<p class="font-data-sm text-data-sm text-on-surface-variant uppercase tracking-widest mb-2">Secondary Metric: Hits@10</p>
+<p class="font-headline-lg text-headline-lg text-white font-bold tabular-nums tracking-tighter">0.941</p>
+</div>
+</section>
+<!-- Comparison Matrix -->
+<section class="mb-12">
+<h3 class="font-data-lg text-data-lg uppercase mb-4 flex items-center gap-2">
+<span class="w-2 h-2 bg-white block"></span> COMPARISON MATRIX
+                    </h3>
+<div class="tech-border sharp-edges overflow-hidden bg-black">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="font-data-sm text-data-sm text-on-surface-variant uppercase tracking-widest tech-border-b bg-surface-container-lowest">
+<th class="py-3 px-4 tech-border-r font-normal">Model</th>
+<th class="py-3 px-4 tech-border-r font-normal text-right">Hits@10</th>
+<th class="py-3 px-4 font-normal text-right">MRR</th>
+</tr>
+</thead>
+<tbody class="font-data-lg text-data-lg">
+<tr class="tech-border-b bg-surface-container-high transition-colors">
+<td class="py-4 px-4 tech-border-r font-bold text-amber">MiniULTRA</td>
+<td class="py-4 px-4 tech-border-r text-right font-bold tabular-nums">0.941</td>
+<td class="py-4 px-4 text-right font-bold tabular-nums">0.892</td>
+</tr>
+<tr class="tech-border-b hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 tech-border-r">BM25</td>
+<td class="py-4 px-4 tech-border-r text-right tabular-nums text-on-surface-variant">0.612</td>
+<td class="py-4 px-4 text-right tabular-nums text-on-surface-variant">0.540</td>
+</tr>
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="py-4 px-4 tech-border-r">Graph Heuristics</td>
+<td class="py-4 px-4 tech-border-r text-right tabular-nums text-on-surface-variant">0.785</td>
+<td class="py-4 px-4 text-right tabular-nums text-on-surface-variant">0.711</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Terminal Log (Atmospheric detail) -->
+<section class="mb-12">
+<div class="tech-border sharp-edges p-4 bg-black font-data-sm text-data-sm h-32 overflow-y-auto">
+<div class="opacity-70">
+<div><span class="text-amber">[1709482388]</span> INIT_EVAL_SEQ: miniultra-skg-v0</div>
+<div><span class="text-amber">[1709482389]</span> LOADING_DATASET: peersignal_q_v2 ... OK</div>
+<div><span class="text-amber">[1709482389]</span> RUNNING_INFERENCE (GPU:0) ... OK</div>
+<div><span class="text-amber">[1709482390]</span> CALCULATING_METRICS ... OK</div>
+<div class="text-white mt-2">&gt; AWAITING DECISION INPUT... <span class="animate-pulse block inline-block w-2 h-4 bg-amber translate-y-1"></span></div>
+</div>
+</div>
+</section>
+<!-- Decision Buttons -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
+<button class="btn-mechanical red py-6 px-8 text-center font-headline-md text-headline-md w-full flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">delete_forever</span> [ DISCARD ]
+                    </button>
+<button class="btn-mechanical solid-white py-6 px-8 text-center font-headline-md text-headline-md w-full flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">upgrade</span> [ PROMOTE TO SPECIALIST ]
+                    </button>
+</section>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Navigation (only visible on mobile, Active: LAB) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-0 pb-safe h-16 bg-background dark:bg-background border-t border-on-surface dark:border-on-surface md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+            HUB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined mb-1">precision_manufacturing</span>
+            FORGE
+        </a>
+<!-- Active Tab for Qualification Lab -->
+<a class="flex flex-col items-center justify-center text-on-tertiary-container bg-tertiary-container dark:text-on-tertiary-container dark:bg-tertiary-container p-2 font-label-caps text-label-caps scale-95 transition-all w-1/4 border-t-2 border-white" href="#">
+<span class="material-symbols-outlined mb-1">science</span>
+            LAB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined mb-1">storage</span>
+            REGISTRY
+        </a>
+</nav>
+</body></html>

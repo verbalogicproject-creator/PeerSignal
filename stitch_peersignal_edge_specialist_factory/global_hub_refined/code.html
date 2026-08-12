@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PeerSignal - Global Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#000000",
+                        "on-tertiary-fixed": "#410006",
+                        "on-secondary-container": "#b4b5b5",
+                        "on-tertiary": "#680010",
+                        "primary-container": "#000000",
+                        "background": "#131313",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "secondary": "#c6c6c7",
+                        "on-primary": "#303030",
+                        "surface-tint": "#c6c6c6",
+                        "surface-container-highest": "#353535",
+                        "on-surface": "#e5e2e1",
+                        "on-error": "#690005",
+                        "primary": "#c6c6c6",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-variant": "#353535",
+                        "tertiary-fixed-dim": "#ffb3b0",
+                        "on-surface-variant": "#cfc4c5",
+                        "surface-container-low": "#1b1c1c",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "secondary-container": "#454747",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-container": "#1f2020",
+                        "on-primary-container": "#757575",
+                        "on-background": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "surface": "#131313",
+                        "outline-variant": "#4c4546",
+                        "tertiary": "#ffb3b0",
+                        "tertiary-fixed": "#ffdad8",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-dim": "#131313",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "outline": "#988e90",
+                        "inverse-primary": "#5e5e5e",
+                        "on-primary-fixed-variant": "#474747",
+                        "on-tertiary-container": "#e22639",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-on-surface": "#303030",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#454747",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#93001b",
+                        "on-secondary": "#2f3131",
+                        "surface-bright": "#393939"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin": "24px",
+                        "gutter": "16px",
+                        "container-max": "1440px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-rt": ["Inter"],
+                        "data-sm": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "data-lg": ["JetBrains Mono"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-rt": ["15px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "data-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-caps": ["11px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "data-lg": ["18px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom brutalist styles to enforce 0px radius and 1px white borders */
+        * {
+            border-radius: 0 !important;
+        }
+        .brutalist-border {
+            border: 1px solid #FFFFFF;
+        }
+        .leica-red-text {
+            color: #E22639;
+        }
+        .terminal-amber-text {
+            color: #FFB000;
+        }
+        
+        @keyframes crtFlicker {
+            0% { opacity: 0.98; }
+            50% { opacity: 1; }
+            100% { opacity: 0.99; }
+        }
+        .crt-monitor {
+            animation: crtFlicker 0.15s infinite;
+            position: relative;
+        }
+        .crt-monitor::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.5) 150%);
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-transparent text-on-background font-body-rt text-body-rt min-h-screen flex flex-col crt-monitor">
+<canvas class="fixed inset-0 w-full h-full -z-10 pointer-events-none" id="bg-shader"></canvas>
+<!-- TopAppBar Shared Component -->
+<header class="flex justify-between items-center w-full px-margin py-unit bg-black/80 text-primary font-data-sm text-data-sm docked full-width top-0 border-b border-on-surface flat no shadows backdrop-blur-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-headline-md text-headline-md font-bold text-on-background">[SYSTEM_01]</span>
+</div>
+<!-- Navigation specific to header context -->
+<nav class="hidden md:flex gap-6">
+<a class="text-on-background font-bold hover:bg-on-surface hover:text-background Active: scale-95 transition-transform" href="#">HUB</a>
+<a class="text-on-surface-variant hover:bg-on-surface hover:text-background Active: scale-95 transition-transform" href="#">FORGE</a>
+<a class="text-on-surface-variant hover:bg-on-surface hover:text-background Active: scale-95 transition-transform" href="#">LAB</a>
+<a class="text-on-surface-variant hover:bg-on-surface hover:text-background Active: scale-95 transition-transform" href="#">REGISTRY</a>
+</nav>
+<span class="material-symbols-outlined">sensors</span>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- NavigationDrawer Shared Component (Web only, shown here for structural context if needed, but suppressed on linear/transactional or mobile. Assuming Desktop view for full layout) -->
+<aside class="hidden lg:flex flex-col h-full w-80 bg-black/80 backdrop-blur-sm text-on-background font-data-lg text-data-lg border-r-2 border-on-surface flat no shadows py-margin">
+<div class="px-4 pb-8">
+<h2 class="font-headline-md text-headline-md text-on-background">[NODE_TERMINAL]</h2>
+</div>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="text-background bg-on-background font-bold px-4 py-2 flex items-center gap-3 transition-colors duration-100 hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined animate-pulse">terminal</span> ACTIVE ENGINE
+                </a>
+<a class="text-on-background px-4 py-2 flex items-center gap-3 transition-colors duration-100 hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">analytics</span> SYSTEM TELEMETRY
+                </a>
+<a class="text-on-background px-4 py-2 flex items-center gap-3 transition-colors duration-100 hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">history</span> THERMAL LOGS
+                </a>
+<a class="text-on-background px-4 py-2 flex items-center gap-3 transition-colors duration-100 hover:bg-surface-variant" href="#">
+<span class="material-symbols-outlined">settings_input_component</span> PARAM_SET
+                </a>
+<a class="text-on-background px-4 py-2 flex items-center gap-3 transition-colors duration-100 hover:bg-surface-variant leica-red-text" href="#">
+<span class="material-symbols-outlined">emergency</span> HALT_ALL
+                </a>
+</nav>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 p-margin overflow-y-auto">
+<!-- Context Header -->
+<div class="mb-gutter bg-black/60 p-4 brutalist-border backdrop-blur-sm inline-block">
+<h1 class="font-headline-lg text-headline-lg mb-2">PeerSignal Global Hub</h1>
+<div class="font-data-lg text-data-lg flex items-center gap-2 text-on-surface-variant">
+<span class="text-on-background font-bold">&gt; [NATIVE] C++ NDK Factory</span>
+</div>
+</div>
+<!-- Telemetry Bar -->
+<div class="brutalist-border p-unit mb-margin bg-black/80 backdrop-blur-sm flex flex-wrap gap-6 font-data-sm text-data-sm font-bold uppercase">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 bg-white border border-white"></div>
+<span>THERMAL_STATUS_NORMAL</span>
+</div>
+<div class="flex items-center gap-2 terminal-amber-text">
+<div class="w-3 h-3 bg-[#FFB000]"></div>
+<span>78% BAT</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-data-lg">memory</span>
+<span>4.2GB RAM</span>
+</div>
+</div>
+<!-- Brutalist Action Blocks -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-margin">
+<button class="brutalist-border p-margin bg-black/80 backdrop-blur-sm text-on-background hover:bg-white hover:text-black transition-colors duration-150 flex flex-col items-start gap-4 group">
+<span class="material-symbols-outlined font-headline-lg text-headline-lg group-hover:text-black">file_download</span>
+<span class="font-headline-md text-headline-md uppercase">[ IMPORT GRAPH SNAPSHOT ]</span>
+</button>
+<button class="brutalist-border p-margin bg-black/80 backdrop-blur-sm text-on-background hover:bg-white hover:text-black transition-colors duration-150 flex flex-col items-start gap-4 group">
+<span class="material-symbols-outlined font-headline-lg text-headline-lg group-hover:text-black">build</span>
+<span class="font-headline-md text-headline-md uppercase">[ BUILD NEW SPECIALIST ]</span>
+</button>
+<button class="brutalist-border p-margin bg-black/80 backdrop-blur-sm text-on-background hover:bg-white hover:text-black transition-colors duration-150 flex flex-col items-start gap-4 group">
+<span class="material-symbols-outlined font-headline-lg text-headline-lg group-hover:text-black">view_list</span>
+<span class="font-headline-md text-headline-md uppercase">[ VIEW PACK REGISTRY ]</span>
+</button>
+</div>
+<!-- Recent Model Node -->
+<div class="brutalist-border p-gutter bg-black/80 backdrop-blur-sm">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4">RECENT MODEL NODE</h3>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 brutalist-border flex items-center justify-center bg-surface-container-highest">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md">Specialist_Alpha_v2.4</div>
+<div class="font-data-sm text-data-sm text-on-surface-variant">TRAINING_COMPLETE // 04:12:00 ZULU</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-data-sm text-data-sm terminal-amber-text mb-1">HASH_SIGNATURE:</div>
+<div class="font-data-lg text-data-lg tracking-tight px-2 py-1 brutalist-border bg-surface">
+                            0x7F8B9C2A1E4D5F60
+                        </div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar Shared Component (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-0 pb-safe h-16 bg-black/80 backdrop-blur-sm border-t border-on-surface flat no shadows">
+<a class="flex flex-col items-center justify-center text-on-tertiary-container bg-tertiary-container p-2 font-label-caps text-label-caps Active: scale-95 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+            HUB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high Active: scale-95 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">precision_manufacturing</span>
+            FORGE
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high Active: scale-95 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">science</span>
+            LAB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high Active: scale-95 transition-all" href="#">
+<span class="material-symbols-outlined mb-1">storage</span>
+            REGISTRY
+        </a>
+</nav>
+<script>
+const canvas = document.getElementById('bg-shader');
+const gl = canvas.getContext('webgl');
+
+const vsSource = `
+    attribute vec2 position;
+    void main() {
+        gl_Position = vec4(position, 0.0, 1.0);
+    }
+`;
+
+const fsSource = `
+    <!-- STITCH_SHADER_START:ANIMATION_8 class="" -->
+<div class="" style="display:block;width:100%;height:100%;min-height:200px;">
+<canvas id="shader-canvas-ANIMATION_8" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_8');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    uv.x *= u_resolution.x / u_resolution.y;
+    
+    // Grid calculation
+    vec2 grid = fract(uv * 15.0) - 0.5;
+    float line = smoothstep(0.48, 0.5, abs(grid.x)) + smoothstep(0.48, 0.5, abs(grid.y));
+    
+    // Pulsing noise
+    float pulse = sin(u_time * 0.5 + uv.x * 2.0 + uv.y * 1.5) * 0.5 + 0.5;
+    float mask = smoothstep(0.2, 0.8, pulse);
+    
+    vec3 color = vec3(0.05) + (line * vec3(0.1, 0.1, 0.1) * mask);
+    
+    // Vertical scanline
+    float scanline = sin(uv.y * 200.0 + u_time * 5.0) * 0.02;
+    color += scanline;
+
+    gl_FragColor = vec4(color, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_8 -->
+`;
+
+const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(vertexShader, vsSource);
+gl.compileShader(vertexShader);
+
+const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(fragmentShader, fsSource);
+gl.compileShader(fragmentShader);
+
+const program = gl.createProgram();
+gl.attachShader(program, vertexShader);
+gl.attachShader(program, fragmentShader);
+gl.linkProgram(program);
+gl.useProgram(program);
+
+const positionBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+const positions = [
+    -1.0,  1.0,
+     1.0,  1.0,
+    -1.0, -1.0,
+     1.0, -1.0,
+];
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+const positionLocation = gl.getAttribLocation(program, "position");
+gl.enableVertexAttribArray(positionLocation);
+gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+const timeLocation = gl.getUniformLocation(program, "u_time");
+const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+
+function render(time) {
+    time *= 0.001;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+
+    gl.uniform1f(timeLocation, time);
+    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+</script>
+</body></html>

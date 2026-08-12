@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Model Registry Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary": "#2f3131",
+                      "inverse-surface": "#e5e2e1",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "on-tertiary": "#680010",
+                      "surface-container-highest": "#353535",
+                      "tertiary-fixed": "#ffdad8",
+                      "primary": "#c6c6c6",
+                      "on-background": "#e5e2e1",
+                      "surface-variant": "#353535",
+                      "primary-fixed": "#e2e2e2",
+                      "on-secondary-container": "#b4b5b5",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed": "#1b1b1b",
+                      "surface": "#131313",
+                      "surface-dim": "#131313",
+                      "surface-container-high": "#2a2a2a",
+                      "surface-container-low": "#1b1c1c",
+                      "tertiary-container": "#000000",
+                      "on-primary-fixed-variant": "#474747",
+                      "on-surface-variant": "#cfc4c5",
+                      "on-tertiary-fixed-variant": "#93001b",
+                      "on-secondary-fixed-variant": "#454747",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "tertiary": "#ffb3b0",
+                      "secondary-container": "#454747",
+                      "on-primary-container": "#757575",
+                      "surface-bright": "#393939",
+                      "outline-variant": "#4c4546",
+                      "surface-container": "#1f2020",
+                      "on-tertiary-fixed": "#410006",
+                      "secondary": "#c6c6c7",
+                      "on-error-container": "#ffdad6",
+                      "on-tertiary-container": "#e22639",
+                      "error-container": "#93000a",
+                      "on-surface": "#e5e2e1",
+                      "secondary-fixed": "#e2e2e2",
+                      "surface-tint": "#c6c6c6",
+                      "on-primary": "#303030",
+                      "on-error": "#690005",
+                      "inverse-primary": "#5e5e5e",
+                      "secondary-fixed-dim": "#c6c6c7",
+                      "primary-container": "#000000",
+                      "background": "#131313",
+                      "tertiary-fixed-dim": "#ffb3b0",
+                      "outline": "#988e90",
+                      "inverse-on-surface": "#303030",
+                      "surface-container-lowest": "#0e0e0e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0px",
+                      "lg": "0px",
+                      "xl": "0px",
+                      "full": "0px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "container-max": "1440px",
+                      "gutter": "16px",
+                      "margin": "24px"
+              },
+              "fontFamily": {
+                      "data-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "data-lg": [
+                              "JetBrains Mono"
+                      ],
+                      "body-rt": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "data-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "11px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "data-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-rt": [
+                              "15px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "letterSpacing": "0",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.04em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .leica-red { color: #E22639; }
+        .terminal-amber { color: #FFB000; }
+        
+        .mechanical-btn {
+            border: 1px solid #FFFFFF;
+            background: #000000;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+        }
+        .mechanical-btn:hover {
+            background: #FFFFFF;
+            color: #000000;
+        }
+        
+        .data-container {
+            border: 1px solid #FFFFFF;
+        }
+        
+        /* Grid definitions based on style guidance */
+        .grid-desktop { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; padding: 0 24px; }
+        @media (max-width: 1023px) {
+            .grid-desktop { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 16px; padding: 0 16px; }
+        }
+        @media (max-width: 767px) {
+            .grid-desktop { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0 12px; }
+        }
+
+        @keyframes scroll-telemetry {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .telemetry-scroll {
+            animation: scroll-telemetry 15s linear infinite;
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-rt text-body-rt min-h-screen pb-24">
+<!-- TopAppBar Semantic Shell -->
+<header class="flex justify-between items-center w-full px-margin py-unit bg-background dark:bg-background border-b border-on-surface dark:border-on-surface docked full-width top-0 z-50">
+<div class="flex items-center gap-2 text-on-background font-bold hover:bg-on-surface hover:text-background transition-transform scale-100 cursor-pointer p-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chevron_left</span>
+<span class="font-data-sm text-data-sm uppercase">Registry</span>
+</div>
+<div class="font-headline-md text-headline-md font-bold text-on-background dark:text-on-background">[SYSTEM_01]</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary" style="font-variation-settings: 'FILL' 0;">sensors</span>
+</div>
+</header>
+<main class="w-full max-w-container-max mx-auto mt-8 px-margin">
+<!-- Header -->
+<div class="mb-8">
+<h1 class="font-headline-lg text-headline-lg uppercase mb-2">MiniULTRA-SKG-V0</h1>
+<div class="flex gap-4 font-data-sm text-data-sm text-on-surface-variant">
+<span>STATUS: <span class="text-on-background">DEPLOYED</span></span>
+<span>ID: <span class="font-data-sm text-data-sm">9X-77A</span></span>
+</div>
+</div>
+<div class="grid-desktop mb-8">
+<!-- Left Column: Specs & Lineage -->
+<div class="col-span-12 md:col-span-6 lg:col-span-7 flex flex-col gap-8">
+<!-- Technical Specs Section -->
+<div class="data-container">
+<div class="border-b border-on-surface p-3 bg-surface-container-high">
+<h2 class="font-label-caps text-label-caps uppercase">[ TECHNICAL SPECIFICATIONS ]</h2>
+</div>
+<div class="grid grid-cols-2">
+<div class="border-r border-b border-on-surface p-4 flex flex-col">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-1">ARCHITECTURE</span>
+<span class="font-data-lg text-data-lg">Transformer-Lite</span>
+</div>
+<div class="border-b border-on-surface p-4 flex flex-col">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-1">PARAMETERS</span>
+<span class="font-data-lg text-data-lg">5.2M</span>
+</div>
+<div class="border-r border-on-surface p-4 flex flex-col">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-1">DATASET HASH</span>
+<span class="font-data-lg text-data-lg text-surface-tint break-all">0x8F2A9C3B4E1D</span>
+</div>
+<div class="p-4 flex flex-col">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-1">QUANTIZATION</span>
+<span class="font-data-lg text-data-lg">INT8</span>
+</div>
+</div>
+</div>
+<!-- Training Lineage -->
+<div class="data-container">
+<div class="border-b border-on-surface p-3 bg-surface-container-high">
+<h2 class="font-label-caps text-label-caps uppercase">[ TRAINING LINEAGE ]</h2>
+</div>
+<div class="p-4 flex flex-col gap-2 font-data-sm text-data-sm">
+<div class="flex justify-between border-b border-surface-variant pb-2">
+<span class="text-on-surface-variant">EPOCH PROGRESS</span>
+<span class="terminal-amber">100 / 100</span>
+</div>
+<div class="flex justify-between border-b border-surface-variant pb-2">
+<span class="text-on-surface-variant">COMPLETION DATE</span>
+<span>2024.10.15 08:42:11Z</span>
+</div>
+<div class="flex justify-between pb-2">
+<span class="text-on-surface-variant">BASE MODEL ID</span>
+<span>M-CORE-V2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Metrics, Thermal, Actions -->
+<div class="col-span-12 md:col-span-6 lg:col-span-5 flex flex-col gap-8">
+<!-- Performance Metrics -->
+<div class="data-container">
+<div class="border-b border-on-surface p-3 bg-surface-container-high">
+<h2 class="font-label-caps text-label-caps uppercase">[ PERFORMANCE METRICS ]</h2>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3">
+<div class="border-b sm:border-b-0 sm:border-r border-on-surface p-4 flex flex-col items-center justify-center">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-2">MRR</span>
+<span class="font-headline-md text-headline-md">0.892</span>
+</div>
+<div class="border-b sm:border-b-0 sm:border-r border-on-surface p-4 flex flex-col items-center justify-center">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-2">HITS@10</span>
+<span class="font-headline-md text-headline-md">0.941</span>
+</div>
+<div class="p-4 flex flex-col items-center justify-center">
+<span class="font-data-sm text-data-sm text-on-surface-variant mb-2">LATENCY</span>
+<span class="font-headline-md text-headline-md">12<span class="text-data-sm">ms</span></span>
+</div>
+</div>
+</div>
+<!-- Thermal Profile -->
+<div class="data-container">
+<div class="border-b border-on-surface p-3 bg-surface-container-high flex justify-between">
+<h2 class="font-label-caps text-label-caps uppercase">[ THERMAL PROFILE ]</h2>
+<div class="w-2 h-2 bg-on-background"></div>
+</div>
+<div class="p-4">
+<div class="flex justify-between font-data-sm text-data-sm mb-4">
+<span>AVG: 38°C</span>
+<span class="leica-red">PEAK: 42°C</span>
+</div>
+<!-- Minimalist Line Chart Representation -->
+<div class="h-16 w-full border-b border-l border-on-surface relative flex items-end">
+<svg class="absolute inset-0 h-full w-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<polyline fill="none" points="0,80 10,75 20,85 30,60 40,70 50,40 60,50 70,20 80,45 90,30 100,50" stroke="#E22639" stroke-width="1"></polyline>
+</svg>
+</div>
+</div>
+</div>
+<!-- Actions & Neural Topology -->
+<div class="flex flex-col gap-8">
+<div class="data-container flex flex-col relative overflow-hidden h-64 cursor-move">
+<div class="border-b border-on-surface p-3 bg-surface-container-high z-10 absolute top-0 w-full pointer-events-none">
+<h2 class="font-label-caps text-label-caps uppercase text-center">[ NEURAL TOPOLOGY ]</h2>
+</div>
+<div class="w-full h-full bg-background" id="threejs-container"></div>
+<div class="absolute bottom-0 left-0 w-full bg-background/80 backdrop-blur-sm border-t border-on-surface overflow-hidden pointer-events-none py-1">
+<div class="whitespace-nowrap font-data-sm text-data-sm text-tertiary-fixed-dim telemetry-scroll">
+            SYS.OP.4492 &gt;&gt; MEM.ALLOC(1024) &gt;&gt; CORE.TEMP(38.2) &gt;&gt; NET.SYNC(0.99) &gt;&gt; SYS.OP.4492 &gt;&gt; MEM.ALLOC(1024) &gt;&gt; CORE.TEMP(38.2) &gt;&gt; NET.SYNC(0.99) &gt;&gt; SYS.OP.4492 &gt;&gt; MEM.ALLOC(1024) &gt;&gt; CORE.TEMP(38.2) &gt;&gt; NET.SYNC(0.99)
+        </div>
+</div>
+</div>
+<div class="data-container flex flex-col">
+<div class="border-b border-on-surface p-3 bg-surface-container-high text-center">
+<h2 class="font-label-caps text-label-caps uppercase">[ PRIMARY DIRECTIVES ]</h2>
+</div>
+<div class="p-4 flex flex-col sm:flex-row gap-4">
+<button class="mechanical-btn flex-1 py-4 font-label-caps text-label-caps">
+                                [ EXPORT HANDSHAKE ]
+                            </button>
+<button class="mechanical-btn flex-1 py-4 font-label-caps text-label-caps">
+                                [ DEPLOY TO LOCAL EDGE ]
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Semantic Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-0 pb-safe h-16 bg-background dark:bg-background border-t border-on-surface dark:border-on-surface">
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 w-full h-full hover:bg-surface-container-high cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">grid_view</span>
+<span class="font-label-caps text-label-caps mt-1">HUB</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 w-full h-full hover:bg-surface-container-high cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">precision_manufacturing</span>
+<span class="font-label-caps text-label-caps mt-1">FORGE</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant p-2 w-full h-full hover:bg-surface-container-high cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">science</span>
+<span class="font-label-caps text-label-caps mt-1">LAB</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-tertiary-container bg-tertiary-container dark:text-on-tertiary-container dark:bg-tertiary-container p-2 w-full h-full scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storage</span>
+<span class="font-label-caps text-label-caps mt-1 font-bold">&gt; REGISTRY</span>
+</div>
+</nav>
+<script>
+const container = document.getElementById('threejs-container');
+const scene = new THREE.Scene();
+const width = container.clientWidth;
+const height = container.clientHeight;
+const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+renderer.setSize(width, height);
+container.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enableZoom = false;
+
+// Create a wireframe "Model Node" (Octahedron for technical feel)
+const geometry = new THREE.OctahedronGeometry(1.5, 0);
+const material = new THREE.MeshBasicMaterial({ 
+    color: 0xffffff, 
+    wireframe: true,
+    transparent: true,
+    opacity: 0.6
+});
+const node = new THREE.Mesh(geometry, material);
+scene.add(node);
+
+// Add inner core
+const coreGeom = new THREE.IcosahedronGeometry(0.5, 0);
+const coreMat = new THREE.MeshBasicMaterial({ color: 0xE22639 }); // Leica Red
+const core = new THREE.Mesh(coreGeom, coreMat);
+scene.add(core);
+
+camera.position.z = 4;
+
+function animate() {
+    requestAnimationFrame(animate);
+    node.rotation.y += 0.005;
+    node.rotation.x += 0.002;
+    core.rotation.y -= 0.01;
+    
+    // Subtle pulse
+    const scale = 1.0 + Math.sin(Date.now() * 0.002) * 0.05;
+    node.scale.set(scale, scale, scale);
+    
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', () => {
+    if(!container) return;
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+});
+
+animate();
+</script>
+</body></html>

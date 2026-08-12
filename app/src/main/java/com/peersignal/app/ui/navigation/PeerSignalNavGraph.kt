@@ -25,7 +25,7 @@ fun PeerSignalNavGraph(
 ) {
     NavHost(navController = navController, startDestination = Screen.Beacon.route, modifier = modifier) {
         composable(Screen.Sandbox.route) {
-            SandboxScreen()
+            com.peersignal.app.ui.forge.TrainingForgeScreen()
         }
         composable(Screen.Beacon.route) {
             BeaconStreamScreen(

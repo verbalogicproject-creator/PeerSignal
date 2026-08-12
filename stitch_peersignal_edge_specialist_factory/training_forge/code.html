@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PeerSignal - Training Forge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#000000",
+                    "on-tertiary-fixed": "#410006",
+                    "on-secondary-container": "#b4b5b5",
+                    "on-tertiary": "#680010",
+                    "primary-container": "#000000",
+                    "background": "#131313",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "secondary": "#c6c6c7",
+                    "on-primary": "#303030",
+                    "surface-tint": "#c6c6c6",
+                    "surface-container-highest": "#353535",
+                    "on-surface": "#e5e2e1",
+                    "on-error": "#690005",
+                    "primary": "#c6c6c6",
+                    "on-primary-fixed": "#1b1b1b",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-variant": "#353535",
+                    "tertiary-fixed-dim": "#ffb3b0",
+                    "on-surface-variant": "#cfc4c5",
+                    "surface-container-low": "#1b1c1c",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "secondary-container": "#454747",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#e2e2e2",
+                    "surface-container": "#1f2020",
+                    "on-primary-container": "#757575",
+                    "on-background": "#e5e2e1",
+                    "on-error-container": "#ffdad6",
+                    "surface": "#131313",
+                    "outline-variant": "#4c4546",
+                    "tertiary": "#ffb3b0",
+                    "tertiary-fixed": "#ffdad8",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-dim": "#131313",
+                    "primary-fixed-dim": "#c6c6c6",
+                    "outline": "#988e90",
+                    "inverse-primary": "#5e5e5e",
+                    "on-primary-fixed-variant": "#474747",
+                    "on-tertiary-container": "#e22639",
+                    "surface-container-high": "#2a2a2a",
+                    "inverse-on-surface": "#303030",
+                    "secondary-fixed": "#e2e2e2",
+                    "on-secondary-fixed-variant": "#454747",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#93001b",
+                    "on-secondary": "#2f3131",
+                    "surface-bright": "#393939"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "0px"
+            },
+            "spacing": {
+                    "margin": "24px",
+                    "gutter": "16px",
+                    "container-max": "1440px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-rt": [
+                            "Inter"
+                    ],
+                    "data-sm": [
+                            "JetBrains Mono"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "data-lg": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-rt": [
+                            "15px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "data-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "letterSpacing": "0",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "11px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.1em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "data-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.04em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        /* Brutalist/Terminal overrides */
+        .border-leica {
+            border-color: #FFFFFF;
+        }
+        .text-leica-red {
+            color: #E22639;
+        }
+        .text-terminal-amber {
+            color: #FFB000;
+        }
+        .bg-terminal-amber {
+            background-color: #FFB000;
+        }
+        /* Hide scrollbar for logs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Grid background for charts */
+        .chart-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-rt selection:bg-on-background selection:text-background">
+<!-- TopAppBar (From JSON) -->
+<header class="bg-background dark:bg-background docked full-width top-0 border-b border-on-surface dark:border-on-surface flat no shadows z-40 relative">
+<div class="flex justify-between items-center w-full px-margin py-unit h-16">
+<div class="flex items-center gap-4">
+<button class="hover:bg-on-surface hover:text-background Active: scale-95 transition-transform p-2 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">memory</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-on-background dark:text-on-background">
+                    [SYSTEM_01]
+                </span>
+</div>
+<!-- Desktop Nav Cluster -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:bg-on-surface hover:text-background px-3 py-1 transition-colors" href="#">HUB</a>
+<a class="font-data-sm text-data-sm text-on-background font-bold hover:bg-on-surface hover:text-background px-3 py-1 transition-colors flex items-center before:content-['&gt;'] before:mr-2" href="#">FORGE</a>
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:bg-on-surface hover:text-background px-3 py-1 transition-colors" href="#">LAB</a>
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:bg-on-surface hover:text-background px-3 py-1 transition-colors" href="#">REGISTRY</a>
+</nav>
+<button class="hover:bg-on-surface hover:text-background Active: scale-95 transition-transform p-2 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">sensors</span>
+</button>
+</div>
+</header>
+<!-- Main Content Layout -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-margin md:px-margin py-margin mb-20 md:mb-0 flex flex-col md:flex-row gap-gutter">
+<!-- Left Column: Navigation Drawer (From JSON) - Hidden on Mobile, Fixed w-80 on Desktop -->
+<aside class="hidden md:flex flex-col h-full w-80 border-r-2 border-on-surface dark:border-on-surface py-margin flex-shrink-0">
+<div class="px-4 mb-8">
+<h2 class="font-headline-md text-headline-md text-on-background uppercase">[NODE_TERMINAL]</h2>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 text-background bg-on-background font-bold px-4 py-2 transition-colors duration-100 font-data-lg text-data-lg" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                    ACTIVE ENGINE
+                </a>
+<a class="flex items-center gap-3 text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 font-data-lg text-data-lg" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                    SYSTEM TELEMETRY
+                </a>
+<a class="flex items-center gap-3 text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 font-data-lg text-data-lg" href="#">
+<span class="material-symbols-outlined">history</span>
+                    THERMAL LOGS
+                </a>
+<a class="flex items-center gap-3 text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 font-data-lg text-data-lg" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+                    PARAM_SET
+                </a>
+<a class="flex items-center gap-3 text-on-background px-4 py-2 hover:bg-surface-variant transition-colors duration-100 font-data-lg text-data-lg text-leica-red" href="#">
+<span class="material-symbols-outlined">emergency</span>
+                    HALT_ALL
+                </a>
+</nav>
+</aside>
+<!-- Right Column: Training View Canvas -->
+<div class="flex-1 flex flex-col gap-gutter h-full min-h-[707px]">
+<!-- Status Header -->
+<div class="border border-leica p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-tertiary-container relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 flex gap-1">
+<div class="w-3 h-3 border border-leica bg-leica-red animate-pulse"></div>
+<div class="w-3 h-3 border border-leica"></div>
+</div>
+<div>
+<h1 class="font-headline-lg text-headline-lg uppercase flex flex-col">
+<span class="text-on-surface-variant font-data-sm text-data-sm tracking-widest mb-1">TARGET: PEERSIGNAL-V4</span>
+                        EPOCH 14 / 100
+                    </h1>
+<div class="font-data-lg text-data-lg mt-2 flex items-center gap-2">
+<span>STEP 45,231</span>
+<span class="text-on-surface-variant">|</span>
+<span>LR: 1e-4</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-data-lg text-data-lg text-leica-red font-bold flex items-center gap-2 animate-pulse border border-on-tertiary-container px-3 py-1 bg-surface-lowest">
+<span class="material-symbols-outlined text-sm">radio_button_checked</span>
+                        TRAINING ACTIVE
+                    </div>
+<div class="font-data-sm text-data-sm text-on-surface-variant mt-2">
+                        ETA: 04h 12m 30s
+                    </div>
+</div>
+</div>
+<!-- Main Metrics & Chart -->
+<div class="flex flex-col lg:flex-row gap-gutter flex-1">
+<!-- Chart Area -->
+<div class="flex-1 border border-leica flex flex-col relative bg-surface-container-lowest min-h-[400px]">
+<div class="border-b border-leica p-2 px-4 flex justify-between items-center bg-background z-10">
+<span class="font-data-sm text-data-sm uppercase">LOSS_TRAJECTORY</span>
+<span class="font-data-sm text-data-sm text-on-surface-variant">LOG SCALE</span>
+</div>
+<div class="flex-1 chart-grid relative overflow-hidden flex items-end p-4">
+<!-- Abstract Line Chart Visualization -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 400">
+<!-- Axis Lines -->
+<line stroke="#ffffff" stroke-width="1" x1="0" x2="1000" y1="399" y2="399"></line>
+<line stroke="#ffffff" stroke-width="1" x1="1" x2="1" y1="0" y2="400"></line>
+<!-- Validation Loss (Grey) -->
+<polyline fill="none" points="0,50 100,150 200,200 300,180 400,250 500,240 600,280 700,290 800,270 900,310 1000,300" stroke="#666666" stroke-dasharray="4 4" stroke-width="1"></polyline>
+<!-- Training Loss (White) -->
+<polyline fill="none" points="0,20 50,180 150,250 250,220 350,300 450,280 550,320 650,340 750,330 850,360 950,380 1000,370" stroke="#ffffff" stroke-width="2"></polyline>
+<!-- Current Point Marker -->
+<circle cx="950" cy="380" fill="#ffffff" r="4"></circle>
+<line opacity="0.5" stroke="#ffffff" stroke-dasharray="2 2" stroke-width="1" x1="950" x2="950" y1="0" y2="400"></line>
+</svg>
+<!-- Chart Labels Overlay -->
+<div class="absolute top-12 right-4 flex flex-col gap-2 font-data-sm text-data-sm">
+<div class="flex items-center gap-2">
+<div class="w-4 h-0.5 bg-on-background"></div>
+<span>TRAIN LOSS (0.4322)</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<div class="w-4 h-0.5 border-t border-dashed border-on-surface-variant"></div>
+<span>VAL LOSS (0.5109)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side Stats Panel -->
+<div class="w-full lg:w-64 flex flex-col gap-gutter">
+<!-- Metric Block -->
+<div class="border border-leica p-4 bg-background">
+<div class="font-data-sm text-data-sm text-on-surface-variant uppercase mb-2">GPU_01 THERMAL</div>
+<div class="font-headline-md text-headline-md text-leica-red">
+                            84°C
+                        </div>
+<div class="w-full h-1 bg-surface-container-high mt-4">
+<div class="h-full bg-leica-red w-[84%]"></div>
+</div>
+</div>
+<div class="border border-leica p-4 bg-background">
+<div class="font-data-sm text-data-sm text-on-surface-variant uppercase mb-2">VRAM_UTILIZATION</div>
+<div class="font-headline-md text-headline-md">
+                            22.4 GB
+                        </div>
+<div class="w-full h-1 bg-surface-container-high mt-4 flex gap-1">
+<div class="h-full bg-on-background w-[40%]"></div>
+<div class="h-full bg-on-background w-[40%]"></div>
+<div class="h-full bg-on-surface-variant w-[15%]"></div>
+</div>
+<div class="font-data-sm text-data-sm mt-2 text-right">95%</div>
+</div>
+<div class="border border-leica p-4 bg-background flex-1">
+<div class="font-data-sm text-data-sm text-on-surface-variant uppercase mb-2">THROUGHPUT</div>
+<div class="font-headline-md text-headline-md">
+                            1.2k
+                        </div>
+<div class="font-data-sm text-data-sm mt-1">
+                            TOKENS / SEC
+                        </div>
+</div>
+</div>
+</div>
+<!-- Controls (Brutalist Buttons) -->
+<div class="flex flex-col sm:flex-row gap-gutter">
+<button class="flex-1 border border-leica py-4 px-6 font-label-caps text-label-caps hover:bg-on-background hover:text-background transition-colors text-center uppercase tracking-widest">
+                    [ PAUSE ]
+                </button>
+<button class="flex-1 border border-leica py-4 px-6 font-label-caps text-label-caps bg-on-surface-variant text-background opacity-50 cursor-not-allowed text-center uppercase tracking-widest">
+                    [ RESUME ]
+                </button>
+<button class="flex-1 border border-leica border-leica-red py-4 px-6 font-label-caps text-label-caps text-leica-red hover:bg-leica-red hover:text-background transition-colors text-center uppercase tracking-widest">
+                    [ CANCEL ]
+                </button>
+</div>
+<!-- Terminal Log Window -->
+<div class="border border-leica h-48 flex flex-col bg-surface-container-lowest overflow-hidden">
+<div class="border-b border-leica px-4 py-2 flex justify-between items-center bg-background">
+<span class="font-data-sm text-data-sm uppercase">STDOUT_LOG</span>
+<span class="w-2 h-2 bg-terminal-amber animate-pulse"></span>
+</div>
+<div class="p-4 font-data-sm text-data-sm flex flex-col gap-1 overflow-y-auto no-scrollbar h-full" id="terminal-output">
+<div class="flex"><span class="text-on-surface-variant w-24">14:02:10</span> <span class="text-on-background">Loading dataset shard 4/10...</span></div>
+<div class="flex"><span class="text-on-surface-variant w-24">14:02:15</span> <span class="text-on-background">Epoch 14: loss 0.4410 | lr 1.00e-04</span></div>
+<div class="flex"><span class="text-on-surface-variant w-24">14:02:30</span> <span class="text-on-background">Epoch 14: loss 0.4395 | lr 1.00e-04</span></div>
+<div class="flex"><span class="text-on-surface-variant w-24">14:02:45</span> <span class="text-on-background">Epoch 14: loss 0.4351 | lr 1.00e-04</span></div>
+<div class="flex"><span class="text-terminal-amber w-24">14:03:00</span> <span class="text-terminal-amber">WARN: VRAM usage spike detected (94%)</span></div>
+<div class="flex"><span class="text-on-surface-variant w-24">14:03:15</span> <span class="text-on-background">Epoch 14: loss 0.4330 | lr 1.00e-04</span></div>
+<div class="flex"><span class="text-on-surface-variant w-24">14:03:30</span> <span class="text-on-background">Epoch 14: loss 0.4322 | lr 1.00e-04</span></div>
+<div class="flex"><span class="text-leica-red w-24">14:03:32</span> <span class="text-leica-red">Thermal limit reached, cooling...</span></div>
+<div class="flex items-center gap-2 mt-2">
+<span class="text-terminal-amber">&gt;</span>
+<span class="w-2 h-4 bg-terminal-amber animate-pulse"></span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (From JSON) - Mobile Only -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-0 pb-safe h-16 bg-background dark:bg-background border-t border-on-surface dark:border-on-surface flat no shadows">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined text-lg mb-1">grid_view</span>
+            HUB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-tertiary-container bg-tertiary-container p-2 font-label-caps text-label-caps w-1/4 Active: scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-lg mb-1" style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
+            FORGE
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined text-lg mb-1">science</span>
+            LAB
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 font-label-caps text-label-caps hover:bg-surface-container-high w-1/4" href="#">
+<span class="material-symbols-outlined text-lg mb-1">storage</span>
+            REGISTRY
+        </a>
+</nav>
+<script>
+        // Simple script to auto-scroll terminal to bottom on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminal = document.getElementById('terminal-output');
+            terminal.scrollTop = terminal.scrollHeight;
+        });
+    </script>
+</body></html>

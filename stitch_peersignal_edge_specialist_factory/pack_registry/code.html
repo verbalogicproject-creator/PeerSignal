@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Specialist Pack Registry - PeerSignal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#000000",
+                      "on-tertiary-fixed": "#410006",
+                      "on-secondary-container": "#b4b5b5",
+                      "on-tertiary": "#680010",
+                      "primary-container": "#000000",
+                      "background": "#131313",
+                      "secondary-fixed-dim": "#c6c6c7",
+                      "secondary": "#c6c6c7",
+                      "on-primary": "#303030",
+                      "surface-tint": "#c6c6c6",
+                      "surface-container-highest": "#353535",
+                      "on-surface": "#e5e2e1",
+                      "on-error": "#690005",
+                      "primary": "#c6c6c6",
+                      "on-primary-fixed": "#1b1b1b",
+                      "surface-container-lowest": "#0e0e0e",
+                      "surface-variant": "#353535",
+                      "tertiary-fixed-dim": "#ffb3b0",
+                      "on-surface-variant": "#cfc4c5",
+                      "surface-container-low": "#1b1c1c",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "secondary-container": "#454747",
+                      "error": "#ffb4ab",
+                      "primary-fixed": "#e2e2e2",
+                      "surface-container": "#1f2020",
+                      "on-primary-container": "#757575",
+                      "on-background": "#e5e2e1",
+                      "on-error-container": "#ffdad6",
+                      "surface": "#131313",
+                      "outline-variant": "#4c4546",
+                      "tertiary": "#ffb3b0",
+                      "tertiary-fixed": "#ffdad8",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-dim": "#131313",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "outline": "#988e90",
+                      "inverse-primary": "#5e5e5e",
+                      "on-primary-fixed-variant": "#474747",
+                      "on-tertiary-container": "#e22639",
+                      "surface-container-high": "#2a2a2a",
+                      "inverse-on-surface": "#303030",
+                      "secondary-fixed": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#454747",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#93001b",
+                      "on-secondary": "#2f3131",
+                      "surface-bright": "#393939",
+                      "terminal-amber": "#FFB000"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0px",
+                      "lg": "0px",
+                      "xl": "0px",
+                      "full": "0px"
+              },
+              "spacing": {
+                      "margin": "24px",
+                      "gutter": "16px",
+                      "container-max": "1440px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "body-rt": ["Inter"],
+                      "data-sm": ["JetBrains Mono"],
+                      "label-caps": ["Inter"],
+                      "data-lg": ["JetBrains Mono"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-rt": ["15px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                      "data-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "400"}],
+                      "label-caps": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "data-lg": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+        .leica-red {
+            color: #E22639;
+        }
+        .leica-red-border {
+            border-color: #E22639;
+        }
+        .mech-btn {
+            border: 1px solid #FFFFFF;
+            background: #000000;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .mech-btn:hover {
+            background: #FFFFFF;
+            color: #000000;
+        }
+        .terminal-glow {
+            text-shadow: 0 0 2px rgba(255,176,0,0.5);
+        }
+        .blinking-cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(0px); /* Strict no blur policy */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-black text-white min-h-screen font-body-rt flex flex-col md:flex-row">
+<!-- TopAppBar (Web & Mobile, but acts as Desktop Header here if SideNav not used, else just Mobile) -->
+<header class="flex md:hidden justify-between items-center w-full px-margin py-unit bg-black border-b border-white z-40 fixed top-0 h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-white text-xl">memory</span>
+<span class="font-headline-md text-headline-md font-bold text-white tracking-tight">[SYSTEM_01]</span>
+</div>
+<span class="material-symbols-outlined text-white text-xl">sensors</span>
+</header>
+<!-- NavigationDrawer (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen w-80 bg-black border-r border-white py-margin fixed left-0 top-0 z-40">
+<div class="px-4 mb-8">
+<h2 class="font-headline-md text-headline-md text-white font-bold tracking-tight">[NODE_TERMINAL]</h2>
+</div>
+<ul class="flex flex-col gap-1 w-full flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-white hover:bg-surface-variant transition-colors duration-100 font-data-sm text-data-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">terminal</span>
+                    ACTIVE ENGINE
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-white hover:bg-surface-variant transition-colors duration-100 font-data-sm text-data-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+                    SYSTEM TELEMETRY
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-white hover:bg-surface-variant transition-colors duration-100 font-data-sm text-data-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">history</span>
+                    THERMAL LOGS
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 text-black bg-white font-bold transition-colors duration-100 font-data-sm text-data-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storage</span>
+<span class="font-bold mr-2">&gt;</span> REGISTRY
+                </a>
+</li>
+<li class="mt-auto">
+<a class="flex items-center gap-3 px-4 py-2 leica-red hover:bg-surface-variant transition-colors duration-100 font-data-sm text-data-sm border-t border-white mt-4 pt-4" href="#">
+<span class="material-symbols-outlined leica-red" style="font-variation-settings: 'FILL' 0;">emergency</span>
+                    HALT_ALL
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 md:pt-margin pb-24 md:pb-margin px-margin md:ml-80 flex flex-col gap-gutter max-w-container-max mx-auto w-full">
+<!-- Header / Context -->
+<div class="flex flex-col gap-unit mb-8 border-b border-white pb-4">
+<h1 class="font-headline-lg text-headline-lg text-white uppercase tracking-tighter">Specialist Pack Registry</h1>
+<p class="font-data-lg text-data-lg text-white font-mono flex items-center gap-2">
+                STATUS: <span class="leica-red font-bold">ONLINE</span> <span class="w-2 h-2 bg-[#E22639] inline-block animate-pulse"></span>
+</p>
+<p class="font-data-sm text-data-sm text-gray-400 font-mono mt-2">&gt; LISTING COMPLETED MODELS: 42 IDENTIFIED.</p>
+</div>
+<!-- Filter/Action Bar (Brutalist) -->
+<div class="flex justify-between items-center border border-white p-2 bg-black mb-4">
+<div class="flex gap-4 items-center">
+<span class="font-data-sm text-data-sm text-white uppercase">&gt; FILTERS:</span>
+<span class="font-data-sm text-data-sm border-b border-white text-white cursor-pointer hover:leica-red">ALL</span>
+<span class="font-data-sm text-data-sm text-gray-500 cursor-pointer hover:text-white">TRANSFORMER-LITE</span>
+<span class="font-data-sm text-data-sm text-gray-500 cursor-pointer hover:text-white">VISION-HEAVY</span>
+</div>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-white mr-2">search</span>
+<input class="bg-black text-white font-data-sm text-data-sm border-b border-white border-t-0 border-l-0 border-r-0 focus:ring-0 focus:border-terminal-amber px-0 py-1 w-32 placeholder-gray-600 outline-none" placeholder="QUERY..." type="text"/>
+</div>
+</div>
+<!-- Grid Layout for Models -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<article class="border border-white bg-black flex flex-col p-4 gap-4 relative group hover:border-[#E22639] transition-colors">
+<div class="absolute top-2 right-2 w-2 h-2 bg-[#E22639]"></div>
+<header>
+<h3 class="font-headline-md text-headline-md text-white tracking-tight uppercase">MiniULTRA-SKG-v0</h3>
+</header>
+<div class="flex-grow flex flex-col gap-1 border-t border-b border-white py-2 my-2 font-data-sm text-data-sm font-mono text-gray-300">
+<div class="flex justify-between">
+<span class="text-gray-500">ARCH:</span>
+<span>Transformer-Lite (5M)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">HASH:</span>
+<span class="truncate ml-4">0x8F2A...9C</span>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-gray-500">THERMAL RECEIPT:</span>
+<span class="text-terminal-amber bg-[#222222] px-1">MAX 42C</span>
+</div>
+</div>
+<footer class="mt-auto">
+<button class="mech-btn w-full py-2 font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2" onclick="openHandshake('MiniULTRA-SKG-v0', '0x8F2A...9C')">
+                        [ HANDSHAKE ] <span class="material-symbols-outlined text-sm">qr_code</span>
+</button>
+</footer>
+</article>
+<!-- Card 2 -->
+<article class="border border-white bg-black flex flex-col p-4 gap-4 relative group hover:border-white transition-colors">
+<div class="absolute top-2 right-2 w-2 h-2 bg-white"></div>
+<header>
+<h3 class="font-headline-md text-headline-md text-white tracking-tight uppercase">DataCrunch-Alpha</h3>
+</header>
+<div class="flex-grow flex flex-col gap-1 border-t border-b border-[#222222] py-2 my-2 font-data-sm text-data-sm font-mono text-gray-300">
+<div class="flex justify-between">
+<span class="text-gray-500">ARCH:</span>
+<span>DenseNet-Core (12M)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">HASH:</span>
+<span class="truncate ml-4">0xA1B2...4D</span>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-gray-500">THERMAL RECEIPT:</span>
+<span class="text-white bg-[#222222] px-1">NOMINAL 38C</span>
+</div>
+</div>
+<footer class="mt-auto">
+<button class="mech-btn w-full py-2 font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2" onclick="openHandshake('DataCrunch-Alpha', '0xA1B2...4D')">
+                        [ HANDSHAKE ] <span class="material-symbols-outlined text-sm">qr_code</span>
+</button>
+</footer>
+</article>
+<!-- Card 3 -->
+<article class="border border-white bg-black flex flex-col p-4 gap-4 relative group hover:border-[#E22639] transition-colors">
+<div class="absolute top-2 right-2 w-2 h-2 bg-[#E22639]"></div>
+<header>
+<h3 class="font-headline-md text-headline-md text-white tracking-tight uppercase">VisionSpectra-9</h3>
+</header>
+<div class="flex-grow flex flex-col gap-1 border-t border-b border-white py-2 my-2 font-data-sm text-data-sm font-mono text-gray-300">
+<div class="flex justify-between">
+<span class="text-gray-500">ARCH:</span>
+<span>ViT-Heavy (88M)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">HASH:</span>
+<span class="truncate ml-4">0x7C99...EF</span>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-gray-500">THERMAL RECEIPT:</span>
+<span class="text-[#E22639] bg-[#222222] px-1 border border-[#E22639]">CRITICAL 89C</span>
+</div>
+</div>
+<footer class="mt-auto">
+<button class="mech-btn w-full py-2 font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2" onclick="openHandshake('VisionSpectra-9', '0x7C99...EF')">
+                        [ HANDSHAKE ] <span class="material-symbols-outlined text-sm">qr_code</span>
+</button>
+</footer>
+</article>
+<!-- Card 4 (Placeholder Image to show brutalist aesthetic in media) -->
+<article class="border border-white bg-black flex flex-col relative group md:col-span-2 lg:col-span-1">
+<div class="h-32 w-full border-b border-white" data-alt="A macro shot of a complex circuit board with harsh, cold white lighting, deep black shadows, and a single glowing red LED indicator, evoking a high-precision, brutalist engineering aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATL8-tIDVv6cl3fdldfCPm9J9BYDBJxwNDRcHNXjPrQXDqt6r6AO6Ea-20Gcbg5Xd-EQvYx2gpbIulr6aBDp7GrTZboKn14HDSz1k9ETyfmaYKAp9xPQqL4Jsi3Hz0F-ldLf038DzM7mha685sP5fzBgB95YmmwwGbNZbI1U7IKKM4yy1N3ISTvaIPE-kiAyAtKnp-lRCqSnmuTCJGESfaRF16AV6kvVTfv8tzAnthbTubYCzKFCYY'); background-size: cover; background-position: center;"></div>
+<div class="p-4 flex flex-col h-full">
+<header class="mb-4">
+<h3 class="font-headline-md text-headline-md text-white tracking-tight uppercase">Nexus-Sync-Beta</h3>
+</header>
+<div class="flex-grow flex flex-col gap-1 border-t border-b border-white py-2 my-2 font-data-sm text-data-sm font-mono text-gray-300">
+<div class="flex justify-between">
+<span class="text-gray-500">ARCH:</span>
+<span>Router-Node (1M)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">HASH:</span>
+<span class="truncate ml-4">0x22DD...11</span>
+</div>
+</div>
+<footer class="mt-auto pt-4">
+<button class="mech-btn w-full py-2 font-label-caps text-label-caps uppercase tracking-widest flex items-center justify-center gap-2" onclick="openHandshake('Nexus-Sync-Beta', '0x22DD...11')">
+                            [ HANDSHAKE ] <span class="material-symbols-outlined text-sm">qr_code</span>
+</button>
+</footer>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-0 pb-safe h-16 bg-black border-t border-white">
+<a class="flex flex-col items-center justify-center text-gray-500 p-2 font-label-caps text-label-caps hover:bg-[#222222]" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">grid_view</span>
+            HUB
+        </a>
+<a class="flex flex-col items-center justify-center text-gray-500 p-2 font-label-caps text-label-caps hover:bg-[#222222]" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">precision_manufacturing</span>
+            FORGE
+        </a>
+<a class="flex flex-col items-center justify-center text-gray-500 p-2 font-label-caps text-label-caps hover:bg-[#222222]" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">science</span>
+            LAB
+        </a>
+<a class="flex flex-col items-center justify-center text-black bg-white p-2 font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">storage</span>
+            REGISTRY
+        </a>
+</nav>
+<!-- Handshake Modal (Level 2 Overlay) -->
+<div class="hidden fixed inset-0 z-[100] modal-overlay flex items-center justify-center p-4" id="handshakeModal">
+<div class="bg-black border-2 border-white w-full max-w-md p-6 relative flex flex-col gap-6">
+<!-- Close Button -->
+<button class="absolute top-2 right-2 text-white hover:text-[#E22639] font-mono text-xl leading-none" onclick="closeHandshake()">
+                [X]
+            </button>
+<div class="border-b border-white pb-4">
+<h3 class="font-headline-md text-headline-md text-white uppercase tracking-tighter" id="modalTitle">MODEL_NAME</h3>
+<p class="font-data-sm text-data-sm text-gray-400 font-mono mt-1">&gt; INITIATING SECURE HANDSHAKE PROTOCOL</p>
+</div>
+<div class="flex justify-center items-center py-8 border border-[#222222] bg-[#0A0A0A]">
+<!-- Simulated QR Code / Token Graphic -->
+<div class="w-48 h-48 border border-white flex items-center justify-center relative overflow-hidden" style="background-image: repeating-linear-gradient(45deg, #000 0, #000 2px, #222 2px, #222 4px);">
+<div class="absolute inset-0 bg-black opacity-50 mix-blend-overlay"></div>
+<span class="material-symbols-outlined text-white" style="font-size: 64px;">qr_code_scanner</span>
+<!-- Scanning line animation -->
+<div class="absolute top-0 left-0 w-full h-1 bg-[#E22639] opacity-70 animate-[scan_2s_ease-in-out_infinite]"></div>
+</div>
+</div>
+<div class="font-data-sm text-data-sm font-mono text-white flex flex-col gap-2">
+<div class="flex justify-between border-b border-[#222222] pb-1">
+<span class="text-gray-500">TOKEN HASH:</span>
+<span class="text-terminal-amber" id="modalHash">0x...</span>
+</div>
+<div class="flex justify-between pb-1">
+<span class="text-gray-500">STATUS:</span>
+<span class="text-white uppercase"><span class="blinking-cursor">_</span> WAITING FOR PEER</span>
+</div>
+</div>
+</div>
+</div>
+<style>
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+    </style>
+<script>
+        function openHandshake(modelName, hash) {
+            document.getElementById('modalTitle').textContent = modelName;
+            document.getElementById('modalHash').textContent = hash;
+            document.getElementById('handshakeModal').classList.remove('hidden');
+        }
+
+        function closeHandshake() {
+            document.getElementById('handshakeModal').classList.add('hidden');
+        }
+    </script>
+</body></html>
