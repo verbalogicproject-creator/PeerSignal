@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# A newer push makes an in-flight run obsolete. Cancel it rather than paying
+# for two builds and waiting on the stale one's result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,14 +29,20 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
-    - name: Build with Gradle
-      run: ./gradlew build
-
-    - name: Build Release AAB
-      run: ./gradlew bundleRelease
-
-    - name: Build Release APK
-      run: ./gradlew assembleRelease
+    # One Gradle invocation instead of three.
+    #
+    # `./gradlew build` runs assemble (every variant, including release) plus
+    # check (lint and unit tests), so the old separate `assembleRelease` step
+    # was a pure no-op re-run -- run #31583626623 shows minifyReleaseWithR8
+    # already executing inside `build`.
+    #
+    # `bundleRelease` is the one thing `build` does not cover, since bundle
+    # tasks are not part of assemble. Requesting it in the SAME invocation lets
+    # Gradle share compileReleaseKotlin and minifyReleaseWithR8 with the
+    # assemble path instead of re-resolving and re-running them, and pays
+    # configuration cost once rather than three times.
+    - name: Build, test and package
+      run: ./gradlew build bundleRelease --build-cache
 
     - name: Upload APK
       uses: actions/upload-artifact@v4

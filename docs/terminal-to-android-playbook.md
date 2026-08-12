@@ -147,20 +147,47 @@ red run that dies later is real progress.
   blocked the build. Keep CI tests hermetic, or move them to a source set the CI
   job does not compile.
 
-## 8. Workflow tuning
+## 8. Workflow shape, and why
 
-`.github/workflows/android_build.yml` currently runs:
+`.github/workflows/android_build.yml` previously ran three Gradle invocations:
 
 ```yaml
-- run: ./gradlew build          # already assembles debug + release, runs lint + tests
+- run: ./gradlew build           # assembles debug AND release, runs lint + tests
 - run: ./gradlew bundleRelease
-- run: ./gradlew assembleRelease  # redundant, `build` did this
+- run: ./gradlew assembleRelease # no-op: `build` already did this
 ```
 
-`./gradlew build` already performs `assembleRelease`, so the third step is a
-no-op re-run. Collapsing to `./gradlew bundleRelease assembleDebug testDebugUnitTest`
-would cut wall-clock meaningfully. Adding `--build-cache` and a Gradle cache
-action helps more.
+It now runs one:
 
-For faster feedback while iterating, put the cheapest failing task first — a
-compile-only step ahead of the full build fails in ~90s instead of ~4m.
+```yaml
+- run: ./gradlew build bundleRelease --build-cache
+```
+
+The reasoning, which generalizes to any Gradle CI:
+
+- **`build` = `assemble` + `check`**, and `assemble` covers *every* variant,
+  release included. The old third step was therefore a pure no-op. This is not
+  a guess: run `31583626623` logs `> Task :app:minifyReleaseWithR8` inside the
+  `./gradlew build` step. Read the task list in a real log before assuming what
+  a lifecycle task covers.
+- **`bundleRelease` is the one genuine gap** — bundle tasks are not part of
+  `assemble`, so it must be requested explicitly.
+- **Same invocation, not a second one.** Gradle then shares
+  `compileReleaseKotlin` and `minifyReleaseWithR8` between the assemble and
+  bundle paths, and pays configuration cost once instead of three times. Two
+  invocations would redo the up-to-date checks and re-resolve the graph.
+
+A `concurrency` group with `cancel-in-progress: true` was also added, so a
+newer push kills the in-flight run instead of paying for both and leaving you
+waiting on a stale answer. This matters most here, where pushes come in quick
+succession during a debug loop.
+
+### Residual redundancy, deliberately left
+
+`check` runs unit tests for *both* variants (`testDebugUnitTest` and
+`testReleaseUnitTest` — run #31584605326 shows both compiling and both
+failing). Replacing `build` with an explicit task list would drop the duplicate,
+but hard-codes a variant list that silently goes stale when variants change, and
+a task-name typo costs a full CI round trip to discover. With a small test suite
+the duplicate is cheap; the explicit list is worth it only once tests dominate
+the wall clock.
